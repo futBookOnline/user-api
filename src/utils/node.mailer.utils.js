@@ -3,7 +3,7 @@ export const sendEmail = async (email, subject, message) => {
   const transporter = nodemailer.createTransport({
     port: 465, 
     // host: "mail.bookmyfutsal.com",
-    host: "s782.bom1.mysecurecloudhost.com",
+    host: process.env.SMTP_SERVER,
     secure: true,
     auth: {
       user: process.env.NO_REPLY_EMAIL,
