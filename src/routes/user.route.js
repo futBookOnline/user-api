@@ -8,12 +8,14 @@ import {
   resetPassword,
   updateUser,
   getUser,
-  registrationConfirmationMail
+  registrationConfirmationMail,
+  getUserIdByEmail
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
 router.get("/", listUsers);
+router.post("/email", getUserIdByEmail);
 router.get("/:id", getUser);
 router.post("/", addUser);
 router.put("/:id/change-password", changePassword);

@@ -1,3 +1,4 @@
+import { Error } from "mongoose";
 import User from "../models/user.model.js";
 import { comparePassword, hashPassword } from "../utils/auth.utils.js";
 import { sendEmail } from "../utils/node.mailer.utils.js";
@@ -311,8 +312,8 @@ export const updateUser = async (req, res) => {
 // GET API: Send User Registration Confirmation Mail
 export const registrationConfirmationMail = async (req, res) => {
   const { email, fullName } = req.body;
-  console.log("EMAIL: ", email)
-  console.log("FULLNAME: ", fullName)
+  console.log("EMAIL: ", email);
+  console.log("FULLNAME: ", fullName);
   const verificationCode = randomInt(100000, 1000000);
   //email, subject, message
   const subject = "Verification Code";
@@ -348,6 +349,32 @@ Banepa, Nepal.
     res.status(400).json({
       success: false,
       message: "An error occurred while sending verification mail",
+      error: error.message,
+    });
+  }
+};
+
+// POST API: Find UserId By Email
+export const getUserIdByEmail = async (req, res) => {
+  const { email } = req.body;
+  console.log("EMAIL: ", email)
+  if (!email) throw Error("Email cannot be empty");
+  try {
+    const user = await User.findOne({ email }).select("_id");
+    !user
+      ? res.status(404).json({
+          success: false,
+          message: "Email does not exist",
+        })
+      : res.status(200).json({
+          success: true,
+          message: "User Id fetched successfully",
+          data: user,
+        });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "An error occurred while fetching user id",
       error: error.message,
     });
   }
